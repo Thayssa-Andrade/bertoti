@@ -2,629 +2,112 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aeroporto - Terminal de Controle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Aeroporto | Controle de voos</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #ffffee;
-            --panel: #f0e0d6;
-            --panel-form: #eef2ff;
-            --border: #d9bfb7;
-            --border-form: #b7c5d9;
-            --text: #1a1a1a;
-            --text-dim: #555555;
-            --green: #789922;
-            --accent: #af0a0f;
-            --link: #0000ee;
-            --btn-bg: #34345c;
-            --btn-hover: #4b4b7a;
-            --font-mono: 'Fira Code', monospace;
-            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-            --radius-md: 10px;
-            --radius-sm: 6px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: var(--font-sans);
-            font-size: 14px;
-            padding: 20px 15px;
-            max-width: 900px;
-            margin: 0 auto;
-            line-height: 1.5;
-        }
-        .sky-banner {
-            position: relative;
-            background: linear-gradient(135deg, var(--panel-form), #dce4f7);
-            border: 1px solid var(--border-form);
-            padding: 24px 28px;
-            overflow: hidden;
-            margin-bottom: 24px;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-sm);
-        }
-        .radar-grid {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent 49%, rgba(52, 52, 92, 0.05) 50%, transparent 51%);
-            background-size: 40px 100%;
-            pointer-events: none;
-        }
-        .airplane-track {
-            position: absolute;
-            top: 20px;
-            left: -60px;
-            width: calc(100% + 120px);
-            height: 20px;
-            pointer-events: none;
-        }
-        .plane {
-            position: absolute;
-            font-size: 24px;
-            color: var(--btn-bg);
-            animation: fly 15s ease-in-out infinite;
-            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.15));
-        }
-        @keyframes fly {
-            0% { transform: translateX(0) translateY(0) rotate(2deg); opacity: 0; }
-            10% { opacity: 1; }
-            50% { transform: translateX(50vw) translateY(-8px) rotate(4deg); }
-            90% { opacity: 1; }
-            100% { transform: translateX(100vw) translateY(0) rotate(2deg); opacity: 0; }
-        }
-        header {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        h1 {
-            font-size: 20px;
-            color: var(--accent);
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .status-badge {
-            font-size: 13px;
-            color: #fff;
-            background: var(--btn-bg);
-            padding: 6px 12px;
-            font-family: var(--font-mono);
-            font-weight: 500;
-            border-radius: 20px;
-            box-shadow: 0 2px 6px rgba(52, 52, 92, 0.3);
-        }
-        .post-card-form {
-            background: #ffffff;
-            border: 1px solid var(--border-form);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-sm);
-        }
-        .form-title {
-            color: var(--btn-bg);
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .form-title::before {
-            content: '';
-            display: inline-block;
-            width: 8px; height: 8px;
-            background: var(--btn-bg);
-            border-radius: 50%;
-        }
-        .inputs-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1.5fr auto;
-            gap: 12px;
-        }
-        input, select {
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            padding: 10px 14px;
-            border-radius: var(--radius-sm);
-            font-family: var(--font-sans);
-            font-size: 13px;
-            color: var(--text);
-            outline: none;
-            transition: all 0.2s ease;
-        }
-        input[type="datetime-local"] { font-family: var(--font-mono); }
-        input:focus, select:focus {
-            border-color: var(--btn-bg);
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(52, 52, 92, 0.15);
-        }
-        .btn-main, .btn-secondary {
-            border-radius: var(--radius-sm);
-            padding: 0 20px;
-            font-family: var(--font-sans);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            height: 40px;
-            border: none;
-        }
-        .btn-main {
-            background: var(--btn-bg);
-            color: #fff;
-            box-shadow: 0 2px 4px rgba(52, 52, 92, 0.2);
-        }
-        .btn-main:hover {
-            background: var(--btn-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(52, 52, 92, 0.3);
-        }
-        .btn-main:active { transform: translateY(0); }
-        .btn-secondary { background: #e2e8f0; color: #334155; }
-        .btn-secondary:hover { background: #cbd5e1; }
-        .controls-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 12px 16px;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-sm);
-            flex-wrap: wrap;
-        }
-        .controls-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-grow: 1;
-        }
-        .search-input { width: 100%; max-width: 280px; }
-        .counter-badge {
-            font-size: 13px;
-            color: var(--text-dim);
-            font-weight: 500;
-            background: rgba(255,255,255,0.5);
-            padding: 4px 10px;
-            border-radius: 12px;
-        }
-        .spin-icon { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .spinning .spin-icon { transform: rotate(360deg); }
-        .board { display: flex; flex-direction: column; gap: 16px; }
-        .post-wrapper { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(15px); }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-        .post {
-            background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 16px 20px;
-            position: relative;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s ease;
-        }
-        .post:hover { border-color: #cbb0a7; box-shadow: var(--shadow-md); transform: translateY(-1px); }
-        .post-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-        }
-        .post-id { color: var(--accent); font-family: var(--font-mono); font-weight: 700; font-size: 13px; }
-        .status-pill {
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-        .status-agendado { background: #e3f2fd; color: #0d47a1; }
-        .status-agendado .status-dot { background: #0d47a1; }
-        .status-voando { background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
-        .status-voando .status-dot { background: #1b5e20; animation: pulse 1.5s infinite; }
-        .status-concluido { background: #f1f5f9; color: #475569; }
-        .status-concluido .status-dot { background: #475569; }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(27, 94, 32, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(27, 94, 32, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(27, 94, 32, 0); }
-        }
-        .post-actions { margin-left: auto; display: flex; gap: 12px; }
-        .post-actions button {
-            background: transparent; border: none; color: var(--text-dim);
-            cursor: pointer; font-size: 13px; font-weight: 500; font-family: var(--font-sans);
-            transition: color 0.2s;
-        }
-        .post-actions button:hover { color: var(--accent); text-decoration: underline; }
-        .post-body {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-            gap: 20px;
-        }
-        .route-visual {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-grow: 1;
-        }
-        .airport-code {
-            font-size: 18px;
-            font-weight: 700;
-            font-family: var(--font-mono);
-            color: var(--btn-bg);
-            word-wrap: break-word;
-            max-width: 42%;
-            line-height: 1.2;
-            text-align: center;
-        }
-        .route-line {
-            flex-grow: 1;
-            height: 2px;
-            background: repeating-linear-gradient(90deg, var(--border-form) 0, var(--border-form) 4px, transparent 4px, transparent 8px);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 40px;
-        }
-        .plane-icon {
-            background: #fff;
-            padding: 0 8px;
-            color: var(--green);
-            font-size: 16px;
-            transform: translateX(-50%);
-            position: absolute;
-            left: 50%;
-        }
-        .time-info {
-            text-align: right;
-            font-size: 13px;
-            color: var(--text-dim);
-            font-family: var(--font-mono);
-            background: var(--panel);
-            padding: 6px 12px;
-            border-radius: var(--radius-sm);
-            white-space: nowrap;
-        }
-        .inline-edit-card {
-            margin-top: 16px;
-            padding: 16px;
-            border-radius: var(--radius-sm);
-            background: var(--panel-form);
-            border: 1px solid var(--border-form);
-            animation: fadeIn 0.3s ease-out;
-        }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-dim);
-            background: #ffffff;
-            border-radius: var(--radius-md);
-            border: 1px dashed var(--border);
-            font-size: 15px;
-        }
-        @media (max-width: 768px) {
-            .inputs-grid { grid-template-columns: 1fr; }
-            .controls-bar { flex-direction: column; align-items: stretch; }
-            .search-input { max-width: 100%; }
-            .post-body { flex-direction: column; align-items: flex-start; gap: 16px; }
-            .route-visual { width: 100%; justify-content: space-between; }
-            .time-info { width: 100%; text-align: left; }
-        }
-    </style>
+    <link rel="stylesheet" href="/aeroporto.css">
+    <script src="/aeroporto.js" type="module"></script>
 </head>
 <body>
-<div class="sky-banner">
-    <div class="radar-grid"></div>
-    <div class="airplane-track">
-        <span class="plane">✈</span>
-    </div>
-    <header>
-        <h1>Aeroporto - Controle de Voos</h1>
-        <span class="status-badge" id="live-clock">00:00:00</span>
-    </header>
-</div>
-
-<div class="post-card-form">
-    <div class="form-title">Registrar Novo Voo</div>
-    <form id="novoVooForm" onsubmit="handleNovoVoo(event)">
-        <div class="inputs-grid">
-            <input type="text" id="origem" placeholder="Origem (ex: GRU ou São Paulo)" required>
-            <input type="text" id="destino" placeholder="Destino (ex: SDU ou Rio de Janeiro)" required>
-            <input type="datetime-local" id="dataVoo" required>
-            <button type="submit" id="btn-submit-novo" class="btn-main">
-                <span>Postar Voo</span>
-            </button>
+    <header class="topbar">
+        <a class="brand" href="/" aria-label="Aeroporto, início">
+            <span class="brand-mark" aria-hidden="true">✈</span>
+            Aeroporto
+        </a>
+        <div class="clock">
+            <span>Hora local</span>
+            <time id="clock">—</time>
         </div>
-    </form>
-</div>
+    </header>
 
-<div class="controls-bar">
-    <div class="controls-left">
-        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar Origem ou Destino..." oninput="filtrarEOrdenar()">
-        <select id="sortSelect" onchange="filtrarEOrdenar()">
-            <option value="data-asc">Mais Próximos</option>
-            <option value="data-desc">Mais Distantes</option>
-            <option value="id-desc">Mais Recentes</option>
-            <option value="id-asc">Mais Antigos</option>
-        </select>
-    </div>
-    <div style="display:flex; align-items:center; gap:12px;">
-        <span class="counter-badge" id="counterBadge">Voos: 0</span>
-        <button class="btn-main" id="btnRefresh" onclick="carregarVoos()" title="Atualizar lista" style="padding: 0 12px;">
-            <span class="spin-icon">🔄</span>
-        </button>
-    </div>
-</div>
+    <main>
+        <section class="hero" aria-labelledby="page-title">
+            <div class="hero-content">
+                <h1 id="page-title">Controle de voos<span>.</span></h1>
+                <p>Cadastre rotas e acompanhe os horários de partida.</p>
+            </div>
+        </section>
 
-<main class="board" id="board"></main>
-
-<script>
-    const API_URL = '/voos';
-    let todosOsVoos = [];
-    let itemEmEdicaoId = null;
-
-    document.addEventListener('DOMContentLoaded', () => {
-        iniciarRelogio();
-        carregarVoos();
-    });
-
-    function iniciarRelogio() {
-        const clockEl = document.getElementById('live-clock');
-        setInterval(() => {
-            const now = new Date();
-            clockEl.innerText = now.toLocaleTimeString('pt-BR');
-        }, 1000);
-    }
-
-    function formatarDataParaBackend(dataStr) {
-        if (!dataStr) return null;
-        return dataStr.length === 16 ? `${dataStr}:00` : dataStr;
-    }
-
-    async function carregarVoos() {
-        const btnRefresh = document.getElementById('btnRefresh');
-        if (btnRefresh) btnRefresh.classList.add('spinning');
-        try {
-            const res = await fetch(API_URL);
-            if (res.ok) {
-                todosOsVoos = await res.json();
-                filtrarEOrdenar();
-            } else {
-                console.error('Erro ao buscar voos do servidor:', res.statusText);
-            }
-        } catch (err) {
-            console.error('Erro ao conectar na API:', err);
-        } finally {
-            if (btnRefresh) setTimeout(() => btnRefresh.classList.remove('spinning'), 500);
-        }
-    }
-
-    function calcularStatus(dataVooStr) {
-        if (!dataVooStr) return { texto: 'Indefinido', classe: 'status-concluido' };
-        const agora = new Date();
-        const dataVoo = new Date(dataVooStr);
-        const diffMinutos = (agora - dataVoo) / (1000 * 60);
-        if (diffMinutos < 0) {
-            return { texto: 'Agendado', classe: 'status-agendado' };
-        } else if (diffMinutos >= 0 && diffMinutos <= 120) {
-            return { texto: 'Em Voo', classe: 'status-voando' };
-        } else {
-            return { texto: 'Concluído', classe: 'status-concluido' };
-        }
-    }
-
-    function filtrarEOrdenar() {
-        const termo = document.getElementById('searchInput').value.toLowerCase().trim();
-        const ordenacao = document.getElementById('sortSelect').value;
-
-        let resultado = todosOsVoos.filter(v =>
-            String(v.origem || '').toLowerCase().includes(termo) ||
-            String(v.destino || '').toLowerCase().includes(termo)
-        );
-
-        resultado.sort((a, b) => {
-            const dataA = new Date(a.dataVoo).getTime() || 0;
-            const dataB = new Date(b.dataVoo).getTime() || 0;
-            const idA = a.id || 0;
-            const idB = b.id || 0;
-            if (ordenacao === 'data-asc') return dataA - dataB;
-            if (ordenacao === 'data-desc') return dataB - dataA;
-            if (ordenacao === 'id-desc') return idB - idA;
-            if (ordenacao === 'id-asc') return idA - idB;
-            return 0;
-        });
-
-        document.getElementById('counterBadge').innerText = `Voos: ${resultado.length}`;
-        renderizarBoard(resultado);
-    }
-
-    function renderizarBoard(voos) {
-        const board = document.getElementById('board');
-        board.innerHTML = '';
-        if (!voos || voos.length === 0) {
-            board.innerHTML = '<div class="empty-state">Nenhum voo encontrado no radar.</div>';
-            return;
-        }
-
-        voos.forEach((voo, index) => {
-            const dataObj = new Date(voo.dataVoo);
-            const dataFormatada = !isNaN(dataObj) ? dataObj.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : 'Data Inválida';
-            const status = calcularStatus(voo.dataVoo);
-
-            const wrapper = document.createElement('div');
-            wrapper.className = 'post-wrapper';
-            wrapper.style.animationDelay = `${index * 0.05}s`;
-            wrapper.innerHTML = `
-                <article class="post" id="post-${voo.id}">
-                    <div class="post-header">
-                        <span class="post-id">#${voo.id}</span>
-                        <span class="status-pill ${status.classe}">
-                            <span class="status-dot"></span>${status.texto}
-                        </span>
-                        <div class="post-actions">
-                            <button onclick="toggleEditarInline(${voo.id}, '${escapeJs(voo.origem)}', '${escapeJs(voo.destino)}', '${voo.dataVoo}')">Editar</button>
-                            <button onclick="deletarVoo(${voo.id}, this)">Remover</button>
-                        </div>
-                    </div>
-                    <div class="post-body">
-                        <div class="route-visual">
-                            <span class="airport-code">${escapeHtml(voo.origem).toUpperCase()}</span>
-                            <div class="route-line"><span class="plane-icon">✈</span></div>
-                            <span class="airport-code">${escapeHtml(voo.destino).toUpperCase()}</span>
-                        </div>
-                        <div class="time-info">🕒 ${dataFormatada}</div>
-                    </div>
-                    <div id="inline-edit-container-${voo.id}"></div>
-                </article>
-            `;
-            board.appendChild(wrapper);
-        });
-    }
-
-    async function handleNovoVoo(e) {
-        e.preventDefault();
-        const btnSubmit = document.getElementById('btn-submit-novo');
-        const origem = document.getElementById('origem').value;
-        const destino = document.getElementById('destino').value;
-        const rawDataVoo = document.getElementById('dataVoo').value;
-        const dataVoo = formatarDataParaBackend(rawDataVoo);
-
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<span>Enviando...</span>';
-
-        try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ origem, destino, dataVoo })
-            });
-
-            if (res.ok) {
-                document.getElementById('novoVooForm').reset();
-                await carregarVoos();
-            } else {
-                alert('Erro ao cadastrar novo voo.');
-            }
-        } catch (err) {
-            console.error('Erro na requisição:', err);
-        } finally {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = '<span>Postar Voo</span>';
-        }
-    }
-
-    function toggleEditarInline(id, origem, destino, dataVoo) {
-        if (itemEmEdicaoId && itemEmEdicaoId !== id) fecharEdicaoInline(itemEmEdicaoId);
-        const container = document.getElementById(`inline-edit-container-${id}`);
-        if (container.innerHTML !== '') {
-            fecharEdicaoInline(id);
-            return;
-        }
-
-        itemEmEdicaoId = id;
-        const dataIsoFormatted = dataVoo ? dataVoo.substring(0, 16) : '';
-
-        container.innerHTML = `
-            <div class="inline-edit-card">
-                <form onsubmit="salvarEdicaoInline(event, ${id})">
-                    <div class="inputs-grid" style="grid-template-columns: 1fr 1fr 1.5fr auto auto;">
-                        <input type="text" id="inline-origem-${id}" value="${escapeHtml(origem)}" required placeholder="Origem">
-                        <input type="text" id="inline-destino-${id}" value="${escapeHtml(destino)}" required placeholder="Destino">
-                        <input type="datetime-local" id="inline-dataVoo-${id}" value="${dataIsoFormatted}" required>
-                        <button type="submit" class="btn-main" id="btn-salvar-inline-${id}">Salvar</button>
-                        <button type="button" class="btn-secondary" onclick="fecharEdicaoInline(${id})">Cancelar</button>
+        <div class="workspace">
+            <section class="registration" aria-labelledby="form-title">
+                <div class="registration-heading">
+                    <span aria-hidden="true">+</span>
+                    <h2 id="form-title">Novo voo</h2>
+                </div>
+                <form id="flight-form">
+                    <label for="origin">Origem</label>
+                    <select id="origin" name="origem" required>
+                        <option value="">Selecione a origem</option>
+                    </select>
+                    <label for="destination">Destino</label>
+                    <select id="destination" name="destino" required>
+                        <option value="">Selecione o destino</option>
+                    </select>
+                    <figure class="route-preview" tabindex="-1" aria-labelledby="route-caption">
+                        <canvas id="route-globe" width="640" height="520" aria-hidden="true"></canvas>
+                        <figcaption id="route-caption" role="status">Selecione a origem e o destino para visualizar a rota.</figcaption>
+                    </figure>
+                    <label for="departure">Data e hora da partida</label>
+                    <input id="departure" type="datetime-local" name="dataVoo" required>
+                    <div class="form-actions">
+                        <button id="save" class="primary" type="submit">Cadastrar voo</button>
+                        <button id="cancel" class="secondary" type="button" hidden>Cancelar</button>
                     </div>
                 </form>
+                <p id="form-message" class="feedback" role="status"></p>
+            </section>
+
+            <section class="flights" aria-labelledby="flights-title">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="flights-title">Painel de voos</h2>
+                        <span id="count" role="status"></span>
+                    </div>
+                    <button id="refresh" class="secondary" type="button">↻ <span>Atualizar</span></button>
+                </div>
+                <div class="toolbar">
+                    <div class="field">
+                        <label for="search">Buscar rota</label>
+                        <input id="search" type="search" placeholder="Origem ou destino">
+                    </div>
+                    <div class="field">
+                        <label for="sort">Ordenar por</label>
+                        <select id="sort">
+                            <option value="data-asc">Partida mais próxima</option>
+                            <option value="data-desc">Partida mais distante</option>
+                            <option value="id-desc">Cadastro mais recente</option>
+                            <option value="id-asc">Cadastro mais antigo</option>
+                        </select>
+                    </div>
+                </div>
+                <p id="board-message" class="feedback" role="status"></p>
+                <div id="board" class="board"></div>
+            </section>
+        </div>
+    </main>
+
+    <template id="flight-card">
+        <article class="flight-card">
+            <div class="card-heading">
+                <span class="flight-id"></span>
+                <span class="status"></span>
             </div>
-        `;
-    }
-
-    function fecharEdicaoInline(id) {
-        const container = document.getElementById(`inline-edit-container-${id}`);
-        if (container) container.innerHTML = '';
-        if (itemEmEdicaoId === id) itemEmEdicaoId = null;
-    }
-
-    async function salvarEdicaoInline(e, id) {
-        e.preventDefault();
-        const btnSalvar = document.getElementById(`btn-salvar-inline-${id}`);
-        const origem = document.getElementById(`inline-origem-${id}`).value;
-        const destino = document.getElementById(`inline-destino-${id}`).value;
-        const rawDataVoo = document.getElementById(`inline-dataVoo-${id}`).value;
-        const dataVoo = formatarDataParaBackend(rawDataVoo);
-
-        btnSalvar.disabled = true;
-        btnSalvar.innerText = 'Salvando...';
-
-        try {
-            const res = await fetch(`${API_URL}/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ origem, destino, dataVoo })
-            });
-
-            if (res.ok) {
-                itemEmEdicaoId = null;
-                await carregarVoos();
-            } else {
-                alert('Erro ao atualizar voo.');
-                btnSalvar.disabled = false;
-                btnSalvar.innerText = 'Salvar';
-            }
-        } catch (err) {
-            console.error('Erro ao atualizar inline:', err);
-        }
-    }
-
-    async function deletarVoo(id, btnElement) {
-        if (!confirm(`Confirmar remoção do voo #${id}?`)) return;
-        const wrapper = btnElement.closest('.post-wrapper');
-        wrapper.style.opacity = '0.4';
-        wrapper.style.pointerEvents = 'none';
-
-        try {
-            const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                carregarVoos();
-            } else {
-                wrapper.style.opacity = '1';
-                wrapper.style.pointerEvents = 'auto';
-                alert('Não foi possível excluir o voo.');
-            }
-        } catch (err) {
-            wrapper.style.opacity = '1';
-            wrapper.style.pointerEvents = 'auto';
-            console.error('Erro ao deletar:', err);
-        }
-    }
-
-    function escapeHtml(str) { return String(str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-    function escapeJs(str) { return String(str || '').replace(/'/g, "\\'").replace(/"/g, '\\"'); }
-</script>
+            <div class="route">
+                <div><span>Origem</span><strong class="origin"></strong></div>
+                <span class="route-track" aria-hidden="true"><b>✈</b></span>
+                <div><span>Destino</span><strong class="destination"></strong></div>
+            </div>
+            <div class="card-footer">
+                <div class="departure"><span>Partida</span><time></time></div>
+                <div class="card-actions">
+                        <button type="button" class="view-route">Ver rota</button>
+                    <button type="button" class="edit">Editar</button>
+                    <button type="button" class="remove">Remover</button>
+                </div>
+            </div>
+        </article>
+    </template>
 </body>
 </html>
